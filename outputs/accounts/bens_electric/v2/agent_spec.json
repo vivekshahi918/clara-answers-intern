@@ -1,0 +1,9 @@
+{
+  "greeting": "Hello, this is [Business Name]. How can I assist you?",
+  "transfer": "If you need to speak with Ben, I can transfer the call. Please hold for just a moment.",
+  "fallback": "I'm not sure I understand your question. Can you please provide more context?",
+  "office_hours_response": "Our office hours are Monday to Friday, 8:30 AM to 5:00 PM.",
+  "after_hours_response": "We are currently closed. If this is an emergency for G&M Pressure Washing properties, please let me know and I will transfer the call.",
+  "service_call_fee_response": "Our service call fee is $115, and our hourly rate is $98.",
+  "hourly_rate_response": "Our hourly rate is $98, billed in half-hour increments."
+}

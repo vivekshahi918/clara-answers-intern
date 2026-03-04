@@ -1,0 +1,267 @@
+{
+  "name": "My workflow",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -112,
+        0
+      ],
+      "id": "1d689495-88d0-4c01-ae74-fd2c4ab788b3",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "fileSelector": "/home/node/.n8n-files/dataset/demo_bens_electric.txt",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1.1,
+      "position": [
+        112,
+        0
+      ],
+      "id": "879fbf99-e281-42d7-b8ff-25d81cdd3b41",
+      "name": "Read/Write Files from Disk",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.groq.com/openai/v1/chat/completions",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer YOUR_GROQ_API_KEY"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/js"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "JSON",
+        "body": "={\n  \"model\": \"llama-3.3-70b-versatile\",\n  \"messages\": [\n    {\n      \"role\": \"system\",\n      \"content\": \"You are an AI configuration assistant. Extract business hours, routing rules, and emergency definitions from the provided call transcript. Output your response strictly as a JSON object.\"\n    },\n    {\n      \"role\": \"user\",\n      \"content\": \"{{ $json.clean_transcript }}\"\n    }\n  ],\n  \"response_format\": {\n    \"type\": \"json_object\"\n  }\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        832,
+        0
+      ],
+      "id": "f7a30ef1-5b99-4161-92f3-99e4a7840631",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "jsCode": "try {\n  // 1. Get raw content from Groq\n  const rawContent = $input.first().json.choices[0].message.content;\n  const groqOutput = JSON.parse(rawContent);\n\n  // 2. Define the Hygiene Rules (Templates)\n  const businessHoursRule = \"Greeting -> Ask purpose -> Collect name/number -> Transfer -> Fallback if fail -> Ask if anything else -> Close. Do not mention 'function calls' to the caller.\";\n  const afterHoursRule = \"Greeting -> Ask purpose -> Confirm emergency -> If emergency: collect name, number, address immediately -> Transfer -> Fallback -> Ask if anything else -> Close. Do not mention 'function calls' to the caller.\";\n\n  // 3. Construct the structures\n  const accountMemo = {\n    business_hours: groqOutput.business_hours,\n    routing_rules: groqOutput.routing_rules,\n    emergency_definitions: groqOutput.emergency_definitions,\n    questions_or_unknowns: groqOutput.questions_or_unknowns || []\n  };\n\n  const agentSpec = {\n    system_prompt: `You are an assistant for Ben's Electric. \n    DURING BUSINESS HOURS: ${businessHoursRule}\n    AFTER HOURS: ${afterHoursRule}`,\n    extracted_data: groqOutput\n  };\n\n  // 4. Return both as binary\n  return {\n    json: { success: true },\n    binary: {\n      memo: {\n        data: Buffer.from(JSON.stringify(accountMemo, null, 2)).toString('base64'),\n        mimeType: 'application/json',\n        fileName: 'memo.json'\n      },\n      spec: {\n        data: Buffer.from(JSON.stringify(agentSpec, null, 2)).toString('base64'),\n        mimeType: 'application/json',\n        fileName: 'agent_spec.json'\n      }\n    }\n  };\n\n} catch (error) {\n  // 5. RELIABILITY CHECK: Handle failures and save an error log\n  const errorLog = {\n    timestamp: new Date().toISOString(),\n    message: error.message,\n    input_received: $input.first().json\n  };\n\n  return {\n    json: { success: false, error: error.message },\n    binary: {\n      error_log: {\n        data: Buffer.from(JSON.stringify(errorLog, null, 2)).toString('base64'),\n        mimeType: 'application/json',\n        fileName: 'error_log.json'\n      }\n    }\n  };\n}"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1040,
+        0
+      ],
+      "id": "60919c89-8273-4002-8f07-63e14a82fc52",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "operation": "write",
+        "fileName": "/home/node/.n8n-files/outputs/accounts/bens_electric/v1/memo.json",
+        "dataPropertyName": "memo",
+        "options": {
+          "append": false
+        }
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1.1,
+      "position": [
+        1248,
+        0
+      ],
+      "id": "0b0baeae-c835-4b27-bc3d-6c603267012f",
+      "name": "Read/Write Files from Disk1"
+    },
+    {
+      "parameters": {
+        "operation": "write",
+        "fileName": "/home/node/.n8n-files/outputs/accounts/bens_electric/v1/agent_spec.json",
+        "dataPropertyName": "spec",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1.1,
+      "position": [
+        1456,
+        0
+      ],
+      "id": "49b4d140-e674-43db-967f-f7788c5c3f44",
+      "name": "Read/Write Files from Disk2"
+    },
+    {
+      "parameters": {
+        "workspace": "1213536480748114",
+        "name": "v1",
+        "otherProperties": {
+          "projects": [
+            "1213536497302368"
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.asana",
+      "typeVersion": 1,
+      "position": [
+        1664,
+        0
+      ],
+      "id": "94e2a221-1555-4c62-9bc0-328ef1aba5b1",
+      "name": "Create a task",
+      "credentials": {
+        "asanaApi": {
+          "id": "IDDpOO35ZG11wxBu",
+          "name": "Asana account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "text",
+        "destinationKey": "transcript",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1.1,
+      "position": [
+        336,
+        0
+      ],
+      "id": "c8f6a2a0-dba1-4157-8918-3944ba8eb31c",
+      "name": "Extract from File"
+    },
+    {
+      "parameters": {
+        "jsCode": "let rawText = $input.first().json.transcript;\n\nlet cleanText = rawText.replace(/[\\r\\n]+/g, \" \");\n\nif (cleanText.length > 15000) {\n    cleanText = cleanText.substring(0, 15000) + \"... (truncated)\";\n}\n\nreturn {\n  clean_transcript: cleanText\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        576,
+        0
+      ],
+      "id": "b8e6d495-3c81-45e4-961b-cf50c31ea52e",
+      "name": "Code in JavaScript1"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Read/Write Files from Disk",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read/Write Files from Disk": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Read/Write Files from Disk1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read/Write Files from Disk1": {
+      "main": [
+        [
+          {
+            "node": "Read/Write Files from Disk2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read/Write Files from Disk2": {
+      "main": [
+        [
+          {
+            "node": "Create a task",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript1": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "21983817-1255-4085-be1f-076246b595fe",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "3748f9f9017b05565a807a35fb37df8e45582bb204d5fc60adb1577efe40c023"
+  },
+  "id": "t1PttYABkadO0V3R",
+  "tags": []
+}

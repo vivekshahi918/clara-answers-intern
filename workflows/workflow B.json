@@ -1,0 +1,329 @@
+{
+  "name": "My workflow 2",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1008,
+        0
+      ],
+      "id": "6d73496f-5693-4300-85ff-b89fd829f1ca",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "fileSelector": "/home/node/.n8n-files/dataset/audio1975518882.m4a",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1.1,
+      "position": [
+        -784,
+        0
+      ],
+      "id": "39a44553-06e6-4a92-8b26-f1750d4d1c19",
+      "name": "Read/Write Files from Disk"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.groq.com/openai/v1/audio/transcriptions",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer YOUR_GROQ_API_KEY"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "parameterType": "formBinaryData",
+              "name": "file",
+              "inputDataFieldName": "data"
+            },
+            {
+              "name": "model",
+              "value": "whisper-large-v3"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -576,
+        0
+      ],
+      "id": "5eaefd94-c240-4710-8721-026fc809f23c",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "fileSelector": "/home/node/.n8n-files/outputs/accounts/bens_electric/v1/memo.json",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1.1,
+      "position": [
+        -368,
+        0
+      ],
+      "id": "0037716a-1bb3-4b11-ab60-127e4ee13bea",
+      "name": "Read/Write Files from Disk1"
+    },
+    {
+      "parameters": {
+        "operation": "text",
+        "destinationKey": "memo",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1.1,
+      "position": [
+        -160,
+        0
+      ],
+      "id": "0f2a75c2-729c-4273-88d8-201d102c3308",
+      "name": "Extract from File"
+    },
+    {
+      "parameters": {
+        "jsCode": "let rawText = $node[\"HTTP Request\"].json.text || \"\";\n\nlet cleanText = rawText.replace(/[\\r\\n]+/g, \" \");\n\nreturn {\n  clean_transcript: cleanText\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        48,
+        0
+      ],
+      "id": "f318be8e-7889-48f3-8adf-628b89bf83ba",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.groq.com/openai/v1/chat/completions",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer YOUR_GROQ_API_KEY"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "JSON",
+        "body": "={\n  \"model\": \"llama-3.3-70b-versatile\",\n  \"messages\": [\n    {\n      \"role\": \"system\",\n      \"content\": \"You are a senior AI configuration engineer. Your job is to update an existing JSON config (v1) with new rules extracted from a fresh onboarding transcript. You must return a JSON object with exactly these keys: 'v2_memo' (the updated configuration), 'v2_spec' (the system prompt and extracted data), and 'changelog' (an array of strings describing what changed).\"\n    },\n    {\n      \"role\": \"user\",\n      \"content\": \"Here is the V1 configuration: {{ $node['Read/Write Files from Disk1'].json.memo }}\\n\\nHere is the new onboarding transcript: {{ $node['Code in JavaScript'].json.clean_transcript }}\\n\\nUpdate the config now. Ensure 'v2_spec' contains the conversational rules (Greeting, Transfer, Fallback, etc). Do not return empty objects.\"\n    }\n  ],\n  \"response_format\": { \"type\": \"json_object\" }\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        256,
+        0
+      ],
+      "id": "4e6ab84b-8cc6-4c51-bdad-a02641339911",
+      "name": "HTTP Request1"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Parse the response\nconst rawContent = $input.first().json.choices[0].message.content;\nconst data = JSON.parse(rawContent);\n\nreturn {\n  json: { success: true },\n  binary: {\n    memo_v2: {\n      data: Buffer.from(JSON.stringify(data.v2_memo, null, 2)).toString('base64'),\n      mimeType: 'application/json',\n      fileName: 'memo.json'\n    },\n    spec_v2: {\n      data: Buffer.from(JSON.stringify(data.v2_spec, null, 2)).toString('base64'),\n      mimeType: 'application/json',\n      fileName: 'agent_spec.json'\n    },\n    changelog: {\n      data: Buffer.from(data.changelog.join('\\n')).toString('base64'),\n      mimeType: 'text/markdown',\n      fileName: 'bens_electric_changes.md'\n    }\n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        464,
+        0
+      ],
+      "id": "44ec5483-f8b6-46d0-bb97-d7ef13853514",
+      "name": "Code in JavaScript1"
+    },
+    {
+      "parameters": {
+        "operation": "write",
+        "fileName": "/home/node/.n8n-files/outputs/accounts/bens_electric/v2/memo.json",
+        "dataPropertyName": "memo_v2",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1.1,
+      "position": [
+        672,
+        0
+      ],
+      "id": "1ad3a8d7-913f-4dc4-a4d2-3bcbd2e9817c",
+      "name": "Read/Write Files from Disk2"
+    },
+    {
+      "parameters": {
+        "operation": "write",
+        "fileName": "/home/node/.n8n-files/outputs/accounts/bens_electric/v2/agent_spec.json",
+        "dataPropertyName": "spec_v2",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1.1,
+      "position": [
+        880,
+        0
+      ],
+      "id": "d1daf19e-5a81-447c-a872-d9caf1f2cdda",
+      "name": "Read/Write Files from Disk3"
+    },
+    {
+      "parameters": {
+        "operation": "write",
+        "fileName": "/home/node/.n8n-files/changelog/bens_electric_changes.md",
+        "dataPropertyName": "changelog",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1.1,
+      "position": [
+        1088,
+        0
+      ],
+      "id": "7d6e5f5b-b92c-4f18-8b75-af260f1d2997",
+      "name": "Read/Write Files from Disk4"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Read/Write Files from Disk",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read/Write Files from Disk": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Read/Write Files from Disk1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read/Write Files from Disk1": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request1": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript1": {
+      "main": [
+        [
+          {
+            "node": "Read/Write Files from Disk2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read/Write Files from Disk2": {
+      "main": [
+        [
+          {
+            "node": "Read/Write Files from Disk3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read/Write Files from Disk3": {
+      "main": [
+        [
+          {
+            "node": "Read/Write Files from Disk4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "84b79617-bc64-4070-8582-9114b72a02d0",
+  "meta": {
+    "instanceId": "3748f9f9017b05565a807a35fb37df8e45582bb204d5fc60adb1577efe40c023"
+  },
+  "id": "EMfILtUyQ6muj81s",
+  "tags": []
+}
