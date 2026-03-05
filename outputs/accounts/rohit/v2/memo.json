@@ -1,9 +1,31 @@
 {
-  "mainLine": "main business line",
-  "secondNumber": "personal number to be used for calls forwarded from Clara",
-  "officeHours": "Monday to Friday, 8:30 to 5",
-  "afterHours": "no emergency calls except for existing builders and one property manager (G&M Pressure Washing)",
-  "serviceCallFee": "$115",
-  "hourlyCharge": "$98 per hour for residential, in half hour increments",
-  "transferToBen": "if someone wants to talk to Ben, transfer the call to his second number"
+  "office_hours": {
+    "start_time": "8:30",
+    "end_time": "17:00",
+    "days": [
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday"
+    ]
+  },
+  "after_hours": {
+    "emergency_contacts": [
+      {
+        "company_name": "G&M Pressure Washing",
+        "customer_name": "Shelly",
+        "primary_contact": "Shelly"
+      }
+    ]
+  },
+  "service_fee": {
+    "call_out_fee": 115,
+    "hourly_rate": 98,
+    "half_hourly_rate": 49
+  },
+  "call_forwarding": {
+    "main_line": true,
+    "second_number": false
+  }
 }

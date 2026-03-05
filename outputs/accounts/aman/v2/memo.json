@@ -1,51 +1,13 @@
 {
-  "workingHours": {
-    "monday": {
-      "start": "08:30",
-      "end": "17:00"
-    },
-    "tuesday": {
-      "start": "08:30",
-      "end": "17:00"
-    },
-    "wednesday": {
-      "start": "08:30",
-      "end": "17:00"
-    },
-    "thursday": {
-      "start": "08:30",
-      "end": "17:00"
-    },
-    "friday": {
-      "start": "08:30",
-      "end": "17:00"
-    }
-  },
-  "afterHours": {
-    "emergency": {
-      "allowedNumbers": [
-        "G&M Pressure Washing"
-      ],
-      "allowedCompanies": [
-        "G&M Pressure Washing"
-      ]
-    }
-  },
-  "transfer": {
-    "enabled": true,
-    "secondaryNumber": ""
-  },
-  "callForwarding": {
-    "enabled": true,
-    "number": ""
-  },
-  " notification": {
-    "email": "info@bens-electric-solutions-team.com",
-    "sms": true
-  },
-  "serviceCallFee": {
-    "fee": 115,
-    "hourlyRate": 98,
-    "hourlyRateIncrement": 0.5
-  }
+  "office_hours": "8:30am - 5:00pm, Monday to Friday",
+  "after_hours": "No emergency calls except for existing builders and G&M Pressure Washing",
+  "service_call_fee": "$115",
+  "hourly_rate": "$98/hour",
+  "minimum_fee": "$115 (call out fee) + $49 (first half hour)",
+  "transfer_enabled": true,
+  "notification_email": "info@benslectric.com",
+  "notification_phone_number": "same as main business line",
+  "allowed_after_hours_numbers": [
+    "G&M Pressure Washing"
+  ]
 }

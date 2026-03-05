@@ -1,17 +1,14 @@
 {
-  "greeting": {
-    "message": "Hello, you've reached Ben's Electric Solutions. How can I assist you today?"
-  },
-  "fallback": {
-    "message": "Sorry, I didn't quite understand that. Can you please rephrase?"
-  },
-  "transfer": {
-    "message": "I'm going to transfer you to Ben. Please hold for just a moment."
-  },
-  "workingHours": {
-    "message": "Our working hours are Monday to Friday, 8:30 AM to 5:00 PM. We'll get back to you the next business day."
-  },
-  "afterHours": {
-    "message": "We're currently closed. If you have an emergency, please call back and we'll do our best to assist you."
-  }
+  "greeting": "Hello, you've reached Ben's Electric Solutions. How can I help you today?",
+  "transfer": "I'm going to transfer you to Ben. Please hold for just a moment.",
+  "fallback": "I didn't quite understand that. Can you please rephrase or would you like to speak with Ben directly?",
+  "scheduling": "What date and time would you like to schedule an appointment?",
+  "quote": "I'd be happy to provide you with a quote. Can you please provide me with some more information about the job?",
+  "service_call_fee mention": "only mention if customer asks about minimum fee or quote",
+  "conversational_rules": [
+    "if customer asks about service call fee, respond with '$115 call out fee + $49 for the first half hour'",
+    "if customer asks about hourly rate, respond with '$98/hour'",
+    "if customer wants to schedule an appointment, ask for date and time",
+    "if customer wants a quote, ask for more information about the job"
+  ]
 }

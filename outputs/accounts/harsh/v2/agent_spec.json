@@ -1,11 +1,16 @@
 {
-  "Greeting": "Thank you for calling Ben's Electric Solutions. How can I assist you today?",
-  "Transfer": "I'm going to transfer you to my team. Please hold for just a moment.",
-  "Fallback": "I didn't quite understand that. Could you please rephrase or provide more information?",
-  "ServiceCall": "Our service call fee is $115, and our hourly rate is $98 per hour, billed in half-hour increments.",
-  "Scheduling": "What date and time would you like to schedule an appointment?",
-  "Quote": "I can provide you with a quote for the service. Would you like me to email it to you?",
-  "Emergency": "If this is an emergency, please let me know and I'll do my best to assist you immediately.",
-  "PostCallMessage": "Thank you for calling Ben's Electric Solutions. We appreciate your business and look forward to serving you.",
-  "NotificationFormat": "You have a new call from {caller_name} at {call_time}. The call details are: {call_details}"
+  "greeting": "Hello, you've reached Ben's Electric Solutions. How can I assist you today?",
+  "fallback": "I didn't quite understand that. Can you please repeat or provide more information?",
+  "transfer": {
+    "prompt": "Would you like to speak with Ben directly?",
+    "phone_number": ""
+  },
+  "after_hours": {
+    "message": "Our office is currently closed. We will get back to you the next business day.",
+    "allowed_callers": [
+      {
+        "name": "G&M Pressure Washing"
+      }
+    ]
+  }
 }

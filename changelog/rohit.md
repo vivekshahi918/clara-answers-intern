@@ -1,6 +1,5 @@
-Updated main business line and second number
-Added office hours and after hours rules
-Specified service call fee and hourly charge
-Defined transfer rules for calls to Ben
-Added greeting, transfer, fallback, and after hours conversational rules
-Specified call forwarding and notification rules
+Updated office hours to 8:30 AM to 5:00 PM, Monday to Friday
+Added after-hours emergency contact for G&M Pressure Washing
+Configured call forwarding to main line, with option to add second number
+Implemented greeting, transfer, and fallback messages
+Added service fee message and notification preferences

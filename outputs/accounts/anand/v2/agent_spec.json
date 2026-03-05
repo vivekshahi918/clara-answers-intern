@@ -1,21 +1,12 @@
 {
-  "greeting": {
-    "message": "Hello, you've reached Ben's Electric Solutions. How can I assist you today?"
+  "Greeting": "Hello, you've reached Ben's Electric Solutions. How can I help you today?",
+  "Transfer": "If you need to speak with someone, I can transfer you to Ben. Please hold for just a moment.",
+  "Fallback": "I didn't quite understand that. Can you please repeat or rephrase your question?",
+  "ServiceCall": {
+    "Intro": "We do have a service call fee of $115, which covers the initial call out to the job site.",
+    "HourlyRate": "Our hourly rate is $98 per hour for residential jobs, billed in half-hour increments."
   },
-  "transfer": {
-    "message": "I'm going to transfer you to Ben. Please hold for just a moment.",
-    "conditions": {
-      "emergency": true,
-      "company_name": "G&M Pressure Washing"
-    }
-  },
-  "fallback": {
-    "message": "I didn't quite understand that. Could you please repeat the reason for your call?"
-  },
-  "office_hours": {
-    "message": "Our office is currently open. How can I assist you today?"
-  },
-  "after_hours": {
-    "message": "Our office is currently closed. We'll get back to you the next business day."
+  "AfterHours": {
+    "Message": "We're not available to take your call right now. We'll get back to you the next business day. If you're calling from G&M Pressure Washing, please let us know and we'll do our best to assist you."
   }
 }

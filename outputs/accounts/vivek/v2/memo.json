@@ -1,37 +1,20 @@
 {
-  "name": "Ben's Electric Solutions",
-  "business_hours": {
-    "days": [
+  "office_hours": {
+    "start_time": "8:30",
+    "end_time": "17:30",
+    "days_of_week": [
       "Monday",
       "Tuesday",
       "Wednesday",
       "Thursday",
       "Friday"
-    ],
-    "start_time": "8:30",
-    "end_time": "17:00"
-  },
-  "after_hours": {
-    "emergency": true,
-    "allowed_callers": [
-      {
-        "name": "G&M Pressure Washing",
-        "contact": "Shelly"
-      }
     ]
   },
-  "calls": {
-    "forwarding": {
-      "enabled": true,
-      "number": "main line"
-    }
-  },
-  "sms_notifications": {
-    "enabled": true,
-    "number": "main line"
-  },
-  "email_notifications": {
-    "enabled": true,
-    "address": "info@benselectricsolutions.com"
+  "greeting": "Hello, you've reached Ben's Electric Solutions. How can I assist you today?",
+  "after_hours_message": "We're currently closed. Please leave a message, and we'll get back to you the next business day.",
+  " emergency_transfer_number": null,
+  " emergency_transfer_contexts": {
+    "company_name": "G&M Pressure Washing",
+    "properties_managed": "Chevron and Essos gas stations"
   }
 }

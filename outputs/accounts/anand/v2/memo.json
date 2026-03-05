@@ -1,37 +1,12 @@
 {
-  "business_hours": {
-    "monday": [
-      "08:30",
-      "17:00"
-    ],
-    "tuesday": [
-      "08:30",
-      "17:00"
-    ],
-    "wednesday": [
-      "08:30",
-      "17:00"
-    ],
-    "thursday": [
-      "08:30",
-      "17:00"
-    ],
-    "friday": [
-      "08:30",
-      "17:00"
-    ]
-  },
-  "greeting": "Hello, you've reached Ben's Electric Solutions. How can I assist you today?",
-  "after_hours_message": "Our office is currently closed. We'll get back to you the next business day.",
-  "emergency_transfer": {
-    "company_name": "G&M Pressure Washing",
-    "contact_name": "Shelly",
-    "properties": [
-      "Chevron",
-      "Essos"
-    ]
-  },
-  "service_call_fee": 115,
-  "hourly_charge": 98,
-  "visit_fee_message": "Our service call fee is $115, and our hourly charge is $98. Would you like to schedule an appointment?"
+  "business_hours": "Monday to Friday, 8:30 AM - 5:00 PM",
+  "after_hours": "No emergency calls except for existing builders and one property manager (G&M Pressure Washing)",
+  "service_call_fee": "$115 (call out fee), $98/hour (residential) in half-hour increments",
+  "agent_configured": true,
+  "test_calls": true,
+  "dashboard_access": true,
+  "call_forwarding": true,
+  "call_transfer": true,
+  "SMS_notification": true,
+  "email_notification": true
 }

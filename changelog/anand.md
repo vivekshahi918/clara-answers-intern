@@ -1,6 +1,5 @@
-Added business hours to config
-Updated greeting message
-Added after-hours message
-Configured emergency transfer for G&M Pressure Washing
-Added service call fee and hourly charge to config
-Implemented visit fee message for scheduling appointments
+Added business hours and after-hours rules
+Configured service call fee and hourly rate
+Enabled call forwarding, transfer, SMS, and email notifications
+Set up conversational rules for greeting, transfer, fallback, and service calls
+Updated configuration to include test calls and dashboard access

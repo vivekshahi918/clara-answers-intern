@@ -1,23 +1,40 @@
 {
   "greeting": {
-    "message": "Hello, you've reached Ben's Electric Solutions. How can we help you today?"
+    "type": "static",
+    "message": "Hello, you've reached Ben's Electric Solutions. How can I assist you today?"
   },
   "transfer": {
-    "message": "I'm going to transfer you to Ben. Please hold for just a moment.",
-    "conditions": [
+    "type": "contextual",
+    "contexts": [
       {
-        "type": "caller_request",
-        "value": "speak to Ben"
+        "name": "emergency",
+        "parameters": {
+          "company_name": "G&M Pressure Washing",
+          "properties_managed": "Chevron and Essos gas stations"
+        }
       }
     ]
   },
   "fallback": {
-    "message": "I didn't quite understand that. Could you please rephrase or try again?"
+    "type": "static",
+    "message": "I didn't quite understand that. Could you please rephrase?"
+  },
+  "call_handling": {
+    "office_hours": {
+      "action": "answer",
+      "message": "Hello, you've reached Ben's Electric Solutions. How can I assist you today?"
+    },
+    "after_hours": {
+      "action": "notify",
+      "message": "We're currently closed. Please leave a message, and we'll get back to you the next business day.",
+      "notification_email": "info@benselectricsolutionsteam.com",
+      "notification_phone_number": "[provided by Ben]"
+    }
   },
   "service_call_fee": {
-    "enabled": true,
+    "type": "contextual",
     "amount": 115,
     "hourly_rate": 98,
-    "hourly_rate_half": 49
+    "minimum_fee_message": "Our service call fee is $115. We charge $98 per hour for residential services, with a minimum of $49.00 for the first 30 minutes."
   }
 }
