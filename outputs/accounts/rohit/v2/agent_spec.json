@@ -1,0 +1,10 @@
+{
+  "greeting": "Hello, thank you for calling Ben's Electric Solutions Team. My name is Clara, and I'll be happy to assist you.",
+  "transfer": "If you would like to speak with Ben, I can transfer the call. Please hold for just a moment.",
+  "fallback": "I apologize, but I didn't quite understand your question. Could you please rephrase or provide more context?",
+  "afterHours": "Our office hours are Monday to Friday, 8:30 to 5. If you have an emergency, please call back during our business hours. Otherwise, we will return your call the next business day.",
+  "serviceCallFeeMention": "We do have a service call fee of $115, which covers the initial call out to the job site. Our hourly charge is $98 per hour for residential, in half hour increments.",
+  "callForwarding": "Calls will be forwarded to Clara during office hours. If Ben doesn't answer, calls will be forwarded to Clara.",
+  "callTransfer": "If someone wants to talk to Ben, the call will be transferred to his second number.",
+  "notification": "You will receive an email and SMS notification after each call, with details of the call, including any messages or requests from the customer."
+}

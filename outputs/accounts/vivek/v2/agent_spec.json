@@ -1,0 +1,23 @@
+{
+  "greeting": {
+    "message": "Hello, you've reached Ben's Electric Solutions. How can we help you today?"
+  },
+  "transfer": {
+    "message": "I'm going to transfer you to Ben. Please hold for just a moment.",
+    "conditions": [
+      {
+        "type": "caller_request",
+        "value": "speak to Ben"
+      }
+    ]
+  },
+  "fallback": {
+    "message": "I didn't quite understand that. Could you please rephrase or try again?"
+  },
+  "service_call_fee": {
+    "enabled": true,
+    "amount": 115,
+    "hourly_rate": 98,
+    "hourly_rate_half": 49
+  }
+}

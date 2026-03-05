@@ -1,0 +1,21 @@
+{
+  "greeting": {
+    "message": "Hello, you've reached Ben's Electric Solutions. How can I assist you today?"
+  },
+  "transfer": {
+    "message": "I'm going to transfer you to Ben. Please hold for just a moment.",
+    "conditions": {
+      "emergency": true,
+      "company_name": "G&M Pressure Washing"
+    }
+  },
+  "fallback": {
+    "message": "I didn't quite understand that. Could you please repeat the reason for your call?"
+  },
+  "office_hours": {
+    "message": "Our office is currently open. How can I assist you today?"
+  },
+  "after_hours": {
+    "message": "Our office is currently closed. We'll get back to you the next business day."
+  }
+}

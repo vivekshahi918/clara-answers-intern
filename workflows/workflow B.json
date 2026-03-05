@@ -6,22 +6,22 @@
       "type": "n8n-nodes-base.manualTrigger",
       "typeVersion": 1,
       "position": [
-        -1008,
-        0
+        -1696,
+        160
       ],
       "id": "6d73496f-5693-4300-85ff-b89fd829f1ca",
       "name": "When clicking ‘Execute workflow’"
     },
     {
       "parameters": {
-        "fileSelector": "/home/node/.n8n-files/dataset/audio1975518882.m4a",
+        "fileSelector": "/home/node/.n8n-files/dataset/audio/*.m4a",
         "options": {}
       },
       "type": "n8n-nodes-base.readWriteFile",
       "typeVersion": 1.1,
       "position": [
-        -784,
-        0
+        -1392,
+        -304
       ],
       "id": "39a44553-06e6-4a92-8b26-f1750d4d1c19",
       "name": "Read/Write Files from Disk"
@@ -35,7 +35,7 @@
           "parameters": [
             {
               "name": "Authorization",
-              "value": "Bearer YOUR_GROQ_API_KEY"
+              "value": "Bearer API_KEY_GOES_HERE"
             }
           ]
         },
@@ -59,7 +59,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.4,
       "position": [
-        -576,
+        -448,
         0
       ],
       "id": "5eaefd94-c240-4710-8721-026fc809f23c",
@@ -67,14 +67,14 @@
     },
     {
       "parameters": {
-        "fileSelector": "/home/node/.n8n-files/outputs/accounts/bens_electric/v1/memo.json",
+        "fileSelector": "=/home/node/.n8n-files/outputs/accounts/{{ $node[\"Loop Over Items\"].binary.data.fileName.replace('.m4a','') }}/v1/memo.json",
         "options": {}
       },
       "type": "n8n-nodes-base.readWriteFile",
       "typeVersion": 1.1,
       "position": [
-        -368,
-        0
+        -240,
+        -352
       ],
       "id": "0037716a-1bb3-4b11-ab60-127e4ee13bea",
       "name": "Read/Write Files from Disk1"
@@ -88,7 +88,7 @@
       "type": "n8n-nodes-base.extractFromFile",
       "typeVersion": 1.1,
       "position": [
-        -160,
+        -48,
         0
       ],
       "id": "0f2a75c2-729c-4273-88d8-201d102c3308",
@@ -101,8 +101,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        48,
-        0
+        144,
+        -352
       ],
       "id": "f318be8e-7889-48f3-8adf-628b89bf83ba",
       "name": "Code in JavaScript"
@@ -116,7 +116,7 @@
           "parameters": [
             {
               "name": "Authorization",
-              "value": "Bearer YOUR_GROQ_API_KEY"
+              "value": "Bearer API_KEY_GOES_HERE"
             },
             {
               "name": "Content-Type",
@@ -133,7 +133,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.4,
       "position": [
-        256,
+        352,
         0
       ],
       "id": "4e6ab84b-8cc6-4c51-bdad-a02641339911",
@@ -146,8 +146,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        464,
-        0
+        512,
+        -368
       ],
       "id": "44ec5483-f8b6-46d0-bb97-d7ef13853514",
       "name": "Code in JavaScript1"
@@ -155,14 +155,14 @@
     {
       "parameters": {
         "operation": "write",
-        "fileName": "/home/node/.n8n-files/outputs/accounts/bens_electric/v2/memo.json",
+        "fileName": "=/home/node/.n8n-files/outputs/accounts/{{ $node[\"Loop Over Items\"].binary.data.fileName.replace('.m4a','') }}/v2/memo.json",
         "dataPropertyName": "memo_v2",
         "options": {}
       },
       "type": "n8n-nodes-base.readWriteFile",
       "typeVersion": 1.1,
       "position": [
-        672,
+        720,
         0
       ],
       "id": "1ad3a8d7-913f-4dc4-a4d2-3bcbd2e9817c",
@@ -171,15 +171,15 @@
     {
       "parameters": {
         "operation": "write",
-        "fileName": "/home/node/.n8n-files/outputs/accounts/bens_electric/v2/agent_spec.json",
+        "fileName": "=/home/node/.n8n-files/outputs/accounts/{{ $node[\"Loop Over Items\"].binary.data.fileName.replace('.m4a','') }}/v2/agent_spec.json",
         "dataPropertyName": "spec_v2",
         "options": {}
       },
       "type": "n8n-nodes-base.readWriteFile",
       "typeVersion": 1.1,
       "position": [
-        880,
-        0
+        896,
+        -368
       ],
       "id": "d1daf19e-5a81-447c-a872-d9caf1f2cdda",
       "name": "Read/Write Files from Disk3"
@@ -187,18 +187,45 @@
     {
       "parameters": {
         "operation": "write",
-        "fileName": "/home/node/.n8n-files/changelog/bens_electric_changes.md",
+        "fileName": "=/home/node/.n8n-files/changelog/{{ $node[\"Loop Over Items\"].binary.data.fileName.replace('.m4a','') }}.md",
         "dataPropertyName": "changelog",
         "options": {}
       },
       "type": "n8n-nodes-base.readWriteFile",
       "typeVersion": 1.1,
       "position": [
-        1088,
-        0
+        1136,
+        -16
       ],
       "id": "7d6e5f5b-b92c-4f18-8b75-af260f1d2997",
       "name": "Read/Write Files from Disk4"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -976,
+        -304
+      ],
+      "id": "8bca9f22-75ec-419d-9287-e2525e691f8a",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "amount": 50
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        1296,
+        96
+      ],
+      "id": "0d6fa69f-caaa-478d-9655-297ff50c2989",
+      "name": "Wait",
+      "webhookId": "93d818af-3356-472b-ae4c-701d538db498"
     }
   ],
   "pinData": {},
@@ -218,7 +245,7 @@
       "main": [
         [
           {
-            "node": "HTTP Request",
+            "node": "Loop Over Items",
             "type": "main",
             "index": 0
           }
@@ -312,6 +339,40 @@
           }
         ]
       ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read/Write Files from Disk4": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": false,
@@ -320,7 +381,7 @@
     "binaryMode": "separate",
     "availableInMCP": false
   },
-  "versionId": "84b79617-bc64-4070-8582-9114b72a02d0",
+  "versionId": "a56bdad2-1968-4817-bbf2-5d0c6d65b8ea",
   "meta": {
     "instanceId": "3748f9f9017b05565a807a35fb37df8e45582bb204d5fc60adb1577efe40c023"
   },

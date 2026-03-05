@@ -1,0 +1,17 @@
+{
+  "greeting": {
+    "message": "Hello, you've reached Ben's Electric Solutions. How can I assist you today?"
+  },
+  "fallback": {
+    "message": "Sorry, I didn't quite understand that. Can you please rephrase?"
+  },
+  "transfer": {
+    "message": "I'm going to transfer you to Ben. Please hold for just a moment."
+  },
+  "workingHours": {
+    "message": "Our working hours are Monday to Friday, 8:30 AM to 5:00 PM. We'll get back to you the next business day."
+  },
+  "afterHours": {
+    "message": "We're currently closed. If you have an emergency, please call back and we'll do our best to assist you."
+  }
+}

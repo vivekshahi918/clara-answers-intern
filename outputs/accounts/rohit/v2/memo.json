@@ -1,0 +1,9 @@
+{
+  "mainLine": "main business line",
+  "secondNumber": "personal number to be used for calls forwarded from Clara",
+  "officeHours": "Monday to Friday, 8:30 to 5",
+  "afterHours": "no emergency calls except for existing builders and one property manager (G&M Pressure Washing)",
+  "serviceCallFee": "$115",
+  "hourlyCharge": "$98 per hour for residential, in half hour increments",
+  "transferToBen": "if someone wants to talk to Ben, transfer the call to his second number"
+}

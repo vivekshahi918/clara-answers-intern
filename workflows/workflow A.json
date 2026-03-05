@@ -6,22 +6,22 @@
       "type": "n8n-nodes-base.manualTrigger",
       "typeVersion": 1,
       "position": [
-        -112,
-        0
+        -256,
+        304
       ],
       "id": "1d689495-88d0-4c01-ae74-fd2c4ab788b3",
       "name": "When clicking ‘Execute workflow’"
     },
     {
       "parameters": {
-        "fileSelector": "/home/node/.n8n-files/dataset/demo_bens_electric.txt",
+        "fileSelector": "/home/node/.n8n-files/dataset/transcript/*.txt",
         "options": {}
       },
       "type": "n8n-nodes-base.readWriteFile",
       "typeVersion": 1.1,
       "position": [
-        112,
-        0
+        -160,
+        -336
       ],
       "id": "879fbf99-e281-42d7-b8ff-25d81cdd3b41",
       "name": "Read/Write Files from Disk",
@@ -36,7 +36,7 @@
           "parameters": [
             {
               "name": "Authorization",
-              "value": "Bearer YOUR_GROQ_API_KEY"
+              "value": "Bearer API_KEY_GOES_HERE"
             },
             {
               "name": "Content-Type",
@@ -61,50 +61,16 @@
     },
     {
       "parameters": {
-        "jsCode": "try {\n  // 1. Get raw content from Groq\n  const rawContent = $input.first().json.choices[0].message.content;\n  const groqOutput = JSON.parse(rawContent);\n\n  // 2. Define the Hygiene Rules (Templates)\n  const businessHoursRule = \"Greeting -> Ask purpose -> Collect name/number -> Transfer -> Fallback if fail -> Ask if anything else -> Close. Do not mention 'function calls' to the caller.\";\n  const afterHoursRule = \"Greeting -> Ask purpose -> Confirm emergency -> If emergency: collect name, number, address immediately -> Transfer -> Fallback -> Ask if anything else -> Close. Do not mention 'function calls' to the caller.\";\n\n  // 3. Construct the structures\n  const accountMemo = {\n    business_hours: groqOutput.business_hours,\n    routing_rules: groqOutput.routing_rules,\n    emergency_definitions: groqOutput.emergency_definitions,\n    questions_or_unknowns: groqOutput.questions_or_unknowns || []\n  };\n\n  const agentSpec = {\n    system_prompt: `You are an assistant for Ben's Electric. \n    DURING BUSINESS HOURS: ${businessHoursRule}\n    AFTER HOURS: ${afterHoursRule}`,\n    extracted_data: groqOutput\n  };\n\n  // 4. Return both as binary\n  return {\n    json: { success: true },\n    binary: {\n      memo: {\n        data: Buffer.from(JSON.stringify(accountMemo, null, 2)).toString('base64'),\n        mimeType: 'application/json',\n        fileName: 'memo.json'\n      },\n      spec: {\n        data: Buffer.from(JSON.stringify(agentSpec, null, 2)).toString('base64'),\n        mimeType: 'application/json',\n        fileName: 'agent_spec.json'\n      }\n    }\n  };\n\n} catch (error) {\n  // 5. RELIABILITY CHECK: Handle failures and save an error log\n  const errorLog = {\n    timestamp: new Date().toISOString(),\n    message: error.message,\n    input_received: $input.first().json\n  };\n\n  return {\n    json: { success: false, error: error.message },\n    binary: {\n      error_log: {\n        data: Buffer.from(JSON.stringify(errorLog, null, 2)).toString('base64'),\n        mimeType: 'application/json',\n        fileName: 'error_log.json'\n      }\n    }\n  };\n}"
+        "jsCode": "// 1. Get raw content from Groq\nconst rawContent = $input.first().json.choices[0].message.content;\n\n// 2. Get the original filename from the Loop node and clean it\n// This turns \"demo_bens_electric.txt\" into \"demo_bens_electric\"\nconst originalFileName = $node[\"Loop Over Items\"].json.fileName;\nconst folderName = originalFileName.replace('.txt', '').replace('.m4a', '');\n\ntry {\n  // 3. Clean and Parse Groq Output\n  const cleanedJson = rawContent.replace(/```json/g, '').replace(/```/g, '').trim();\n  const groqOutput = JSON.parse(cleanedJson);\n  \n  // 4. Construct Memo Structure\n  const accountMemo = {\n    source_file: originalFileName,\n    company_name: groqOutput.company_name,\n    business_hours: groqOutput.business_hours,\n    routing_rules: groqOutput.routing_rules,\n    emergency_definitions: groqOutput.emergency_definitions,\n    questions_or_unknowns: groqOutput.questions_or_unknowns || []\n  };\n\n  // 5. Construct Agent Spec (with Prompt Hygiene)\n  const agentSpec = {\n    agent_name: \"Clara - \" + (groqOutput.company_name || folderName),\n    system_prompt: `You are an assistant for ${groqOutput.company_name || folderName}. \n    BUSINESS HOURS: Greeting -> Ask purpose -> Collect name/number -> Transfer -> Fallback if fail -> Ask if anything else -> Close.\n    AFTER HOURS: Greeting -> Ask purpose -> Confirm emergency -> If emergency: collect name, number, address immediately -> Transfer -> Fallback -> Ask if anything else -> Close.\n    Do not mention 'function calls' to the caller.`\n  };\n\n  // 6. Return JSON (with folder_name) + Binary objects\n  return {\n    json: { success: true, folder_name: folderName },\n    binary: {\n      memo: {\n        data: Buffer.from(JSON.stringify(accountMemo, null, 2)).toString('base64'),\n        mimeType: 'application/json',\n        fileName: 'memo.json'\n      },\n      spec: {\n        data: Buffer.from(JSON.stringify(agentSpec, null, 2)).toString('base64'),\n        mimeType: 'application/json',\n        fileName: 'agent_spec.json'\n      }\n    }\n  };\n\n} catch (error) {\n  // Fallback if LLM fails: still create files so the Write nodes don't error out\n  return {\n    json: { success: false, folder_name: folderName, error: error.message },\n    binary: {\n      memo: {\n        data: Buffer.from(JSON.stringify({error: error.message, raw: rawContent})).toString('base64'),\n        mimeType: 'application/json',\n        fileName: 'memo.json'\n      },\n      spec: {\n        data: Buffer.from(JSON.stringify({error: \"Failed to parse\"}), null, 2).toString('base64'),\n        mimeType: 'application/json',\n        fileName: 'agent_spec.json'\n      }\n    }\n  };\n}"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1040,
-        0
+        1024,
+        -352
       ],
       "id": "60919c89-8273-4002-8f07-63e14a82fc52",
       "name": "Code in JavaScript"
-    },
-    {
-      "parameters": {
-        "operation": "write",
-        "fileName": "/home/node/.n8n-files/outputs/accounts/bens_electric/v1/memo.json",
-        "dataPropertyName": "memo",
-        "options": {
-          "append": false
-        }
-      },
-      "type": "n8n-nodes-base.readWriteFile",
-      "typeVersion": 1.1,
-      "position": [
-        1248,
-        0
-      ],
-      "id": "0b0baeae-c835-4b27-bc3d-6c603267012f",
-      "name": "Read/Write Files from Disk1"
-    },
-    {
-      "parameters": {
-        "operation": "write",
-        "fileName": "/home/node/.n8n-files/outputs/accounts/bens_electric/v1/agent_spec.json",
-        "dataPropertyName": "spec",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.readWriteFile",
-      "typeVersion": 1.1,
-      "position": [
-        1456,
-        0
-      ],
-      "id": "49b4d140-e674-43db-967f-f7788c5c3f44",
-      "name": "Read/Write Files from Disk2"
     },
     {
       "parameters": {
@@ -148,16 +114,61 @@
     },
     {
       "parameters": {
-        "jsCode": "let rawText = $input.first().json.transcript;\n\nlet cleanText = rawText.replace(/[\\r\\n]+/g, \" \");\n\nif (cleanText.length > 15000) {\n    cleanText = cleanText.substring(0, 15000) + \"... (truncated)\";\n}\n\nreturn {\n  clean_transcript: cleanText\n};"
+        "jsCode": "let rawText = $input.first().json.transcript;\n\nlet cleanText = rawText.replace(/[\\r\\n]+/g, \" \");\n\nif (cleanText.length > 7000) {\n    cleanText = cleanText.substring(0, 7000) + \"... (truncated)\";\n}\n\nreturn {\n  clean_transcript: cleanText\n};"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        576,
-        0
+        528,
+        -336
       ],
       "id": "b8e6d495-3c81-45e4-961b-cf50c31ea52e",
       "name": "Code in JavaScript1"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        144,
+        -384
+      ],
+      "id": "01bfb6f5-52d8-45f3-89d8-a4b59f01cfde",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "operation": "write",
+        "fileName": "=/home/node/.n8n-files/outputs/accounts/{{$json.folder_name}}/v1/agent_spec.json",
+        "dataPropertyName": "spec",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1.1,
+      "position": [
+        1440,
+        -352
+      ],
+      "id": "9ce4facb-7306-4515-a420-e0eb94c76900",
+      "name": "Read/Write Files from Disk2"
+    },
+    {
+      "parameters": {
+        "operation": "write",
+        "fileName": "=/home/node/.n8n-files/outputs/accounts/{{$json.folder_name}}/v1/memo.json",
+        "dataPropertyName": "memo",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1.1,
+      "position": [
+        1248,
+        16
+      ],
+      "id": "3fa59ebb-824f-4f66-80e5-ee711a0b4470",
+      "name": "Read/Write Files from Disk1"
     }
   ],
   "pinData": {},
@@ -177,7 +188,7 @@
       "main": [
         [
           {
-            "node": "Extract from File",
+            "node": "Loop Over Items",
             "type": "main",
             "index": 0
           }
@@ -206,28 +217,6 @@
         ]
       ]
     },
-    "Read/Write Files from Disk1": {
-      "main": [
-        [
-          {
-            "node": "Read/Write Files from Disk2",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Read/Write Files from Disk2": {
-      "main": [
-        [
-          {
-            "node": "Create a task",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Extract from File": {
       "main": [
         [
@@ -249,6 +238,51 @@
           }
         ]
       ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create a task": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read/Write Files from Disk2": {
+      "main": [
+        [
+          {
+            "node": "Create a task",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read/Write Files from Disk1": {
+      "main": [
+        [
+          {
+            "node": "Read/Write Files from Disk2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": false,
@@ -257,7 +291,7 @@
     "binaryMode": "separate",
     "availableInMCP": false
   },
-  "versionId": "21983817-1255-4085-be1f-076246b595fe",
+  "versionId": "9aced48f-19f9-4f5f-b553-807fdeb668dc",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "3748f9f9017b05565a807a35fb37df8e45582bb204d5fc60adb1577efe40c023"

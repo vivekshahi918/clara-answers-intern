@@ -1,0 +1,51 @@
+{
+  "workingHours": {
+    "monday": {
+      "start": "08:30",
+      "end": "17:00"
+    },
+    "tuesday": {
+      "start": "08:30",
+      "end": "17:00"
+    },
+    "wednesday": {
+      "start": "08:30",
+      "end": "17:00"
+    },
+    "thursday": {
+      "start": "08:30",
+      "end": "17:00"
+    },
+    "friday": {
+      "start": "08:30",
+      "end": "17:00"
+    }
+  },
+  "afterHours": {
+    "emergency": {
+      "allowedNumbers": [
+        "G&M Pressure Washing"
+      ],
+      "allowedCompanies": [
+        "G&M Pressure Washing"
+      ]
+    }
+  },
+  "transfer": {
+    "enabled": true,
+    "secondaryNumber": ""
+  },
+  "callForwarding": {
+    "enabled": true,
+    "number": ""
+  },
+  " notification": {
+    "email": "info@bens-electric-solutions-team.com",
+    "sms": true
+  },
+  "serviceCallFee": {
+    "fee": 115,
+    "hourlyRate": 98,
+    "hourlyRateIncrement": 0.5
+  }
+}

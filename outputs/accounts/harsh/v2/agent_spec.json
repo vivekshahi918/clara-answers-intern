@@ -1,0 +1,11 @@
+{
+  "Greeting": "Thank you for calling Ben's Electric Solutions. How can I assist you today?",
+  "Transfer": "I'm going to transfer you to my team. Please hold for just a moment.",
+  "Fallback": "I didn't quite understand that. Could you please rephrase or provide more information?",
+  "ServiceCall": "Our service call fee is $115, and our hourly rate is $98 per hour, billed in half-hour increments.",
+  "Scheduling": "What date and time would you like to schedule an appointment?",
+  "Quote": "I can provide you with a quote for the service. Would you like me to email it to you?",
+  "Emergency": "If this is an emergency, please let me know and I'll do my best to assist you immediately.",
+  "PostCallMessage": "Thank you for calling Ben's Electric Solutions. We appreciate your business and look forward to serving you.",
+  "NotificationFormat": "You have a new call from {caller_name} at {call_time}. The call details are: {call_details}"
+}
